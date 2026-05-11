@@ -17,7 +17,7 @@ interface Question {
   hint?: string
 }
 
-type Phase = 'start' | 'question' | 'correct' | 'wrong' | 'story' | 'done'
+type Phase = string
 
 // === Shuffle helper ===
 function shuffle<T>(arr: T[]): T[] {
@@ -73,7 +73,7 @@ export default function GamePage() {
   useEffect(() => {
     const p = loadProgress()
     setProgress(p)
-    setStreak(p.currentStreak || 0)
+    setStreak(p.streakDays || 0)
   }, [])
 
   const currentQ = questions[qIndex]
@@ -150,7 +150,7 @@ export default function GamePage() {
   }
 
   // === Done Screen ===
-  if (phase === 'done') {
+  if ((phase === 'done')) {
     const accuracy = Math.round((correctCount / questions.length) * 100)
     return (
       <div className={styles.learnContainer}>
@@ -210,7 +210,7 @@ export default function GamePage() {
       <div className={styles.gameProgressBar}>
         <div
           className={styles.gameProgressFill}
-          style={{ width: `${((qIndex + (phase === 'done' ? 1 : 0)) / questions.length) * 100}%` }}
+          style={{ width: `${((qIndex + ((phase === 'done') ? 1 : 0)) / questions.length) * 100}%` }}
         />
       </div>
 
