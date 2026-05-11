@@ -98,7 +98,7 @@ export default function LearnPage() {
           <div className={styles.streakBadge}>
             <span className={styles.streakNum}>🔥 {progress.streakDays}天</span>
           </div>
-          <Link href="/acupgame" className={styles.btn}>返回首頁</Link>
+          <Link href="/" className={styles.btn}>返回首頁</Link>
         </div>
       </div>
     )
@@ -109,7 +109,7 @@ export default function LearnPage() {
       {/* Header */}
       <div className={styles.learnHeader}>
         <div>
-          <Link href="/acupgame" className={styles.backBtn}>← 返回</Link>
+          <Link href="/" className={styles.backBtn}>← 返回</Link>
           <h1 className={styles.learnTitle}>🎯 緩慢闯關</h1>
         </div>
         <div className={styles.learnProgress}>

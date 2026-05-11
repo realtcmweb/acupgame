@@ -65,7 +65,7 @@ export default function CheckinPage() {
 
   return (
     <div className={styles.checkinContainer}>
-      <Link href="/acupgame" className={styles.backBtn}>← 返回首頁</Link>
+      <Link href="/" className={styles.backBtn}>← 返回首頁</Link>
 
       <div className={styles.checkinHeader}>
         <h1 className={styles.checkinTitle}>🩺 養生打卡</h1>

@@ -81,7 +81,7 @@ export default function HomePage() {
                   <span key={pid} className={styles.hwPoint}>{pid}</span>
                 ))}
               </div>
-              <Link href="/acupgame/daily" className={styles.hwBtn}>
+              <Link href="daily" className={styles.hwBtn}>
                 {hw.completed ? '🔄 複習功課' : '▶️ 開始今日功課'}
               </Link>
             </div>
@@ -91,28 +91,28 @@ export default function HomePage() {
           <div className={styles.menuCard}>
             <h3 className={styles.menuTitle}>🎯 穴位學習</h3>
             <p className={styles.menuDesc}>無計時、無失敗，慢慢記住每個穴位</p>
-            <Link href="/acupgame/learn" className={styles.menuBtn}>進入學習</Link>
+            <Link href="learn" className={styles.menuBtn}>進入學習</Link>
           </div>
 
           {/* 每日挑戰入口 */}
           <div className={styles.menuCard}>
             <h3 className={styles.menuTitle}>🏆 每日挑戰</h3>
             <p className={styles.menuDesc}>每天10道題，輕鬆鞏固所學</p>
-            <Link href="/acupgame/game" className={styles.menuBtn}>進入挑戰</Link>
+            <Link href="game" className={styles.menuBtn}>進入挑戰</Link>
           </div>
 
           {/* 穴位故事入口 */}
           <div className={styles.menuCard}>
             <h3 className={styles.menuTitle}>📚 穴位故事</h3>
             <p className={styles.menuDesc}>了解每個穴位的由來與功效</p>
-            <Link href="/acupgame/stories" className={styles.menuBtn}>閱讀故事</Link>
+            <Link href="stories" className={styles.menuBtn}>閱讀故事</Link>
           </div>
 
           {/* 養生打卡入口 */}
           <div className={styles.menuCard}>
             <h3 className={styles.menuTitle}>🩺 養生打卡</h3>
             <p className={styles.menuDesc}>記錄每日按摩穴位，養成健康好習慣</p>
-            <Link href="/acupgame/checkin" className={styles.menuBtn}>去打卡</Link>
+            <Link href="checkin" className={styles.menuBtn}>去打卡</Link>
           </div>
 
           {/* 學習進度 */}
@@ -142,7 +142,7 @@ export default function HomePage() {
             <MeridianCard code="KI" name="腎經" emoji="⚡" learned={0} total={27} active={false} />
           </div>
           {learnedCount > 0 && (
-            <Link href="/acupgame/learn" className={styles.bigBtn}>▶️ 繼續學習肺經</Link>
+            <Link href="learn" className={styles.bigBtn}>▶️ 繼續學習肺經</Link>
           )}
         </div>
       )}
@@ -169,7 +169,7 @@ export default function HomePage() {
                   </div>
                 ))}
               </div>
-              <Link href="/acupgame/daily" className={`${styles.bigBtn} ${hw.completed ? styles.btnSecondary : ''}`}>
+              <Link href="daily" className={`${styles.bigBtn} ${hw.completed ? styles.btnSecondary : ''}`}>
                 {hw.completed ? '🔄 複習今日功課' : '▶️ 開始今日功課'}
               </Link>
             </div>
@@ -181,7 +181,7 @@ export default function HomePage() {
           <div className={styles.menuCard} style={{ marginTop: 16 }}>
             <h3 className={styles.menuTitle}>🩺 養生打卡</h3>
             <p className={styles.menuDesc}>按完穴位來這裡打卡記錄</p>
-            <Link href="/acupgame/checkin" className={styles.menuBtn}>去打卡</Link>
+            <Link href="checkin" className={styles.menuBtn}>去打卡</Link>
           </div>
         </div>
       )}
@@ -199,7 +199,7 @@ function MeridianCard({ code, name, emoji, learned, total, active }: {
       <div className={styles.meridianProgress}>{learned}/{total}</div>
       {!active && <div className={styles.meridianLock}>🔒 即將推出</div>}
       {active && (
-        <Link href="/acupgame/learn" className={styles.meridianBtn}>學習</Link>
+        <Link href="learn" className={styles.meridianBtn}>學習</Link>
       )}
     </div>
   )

@@ -87,7 +87,7 @@ export default function DailyPage() {
             <span className={styles.streakNum}>🏆</span>
             <span className={styles.streakLabel}>養生大師</span>
           </div>
-          <Link href="/acupgame" className={styles.btn}>返回首頁</Link>
+          <Link href="/" className={styles.btn}>返回首頁</Link>
         </div>
       </div>
     )
@@ -98,7 +98,7 @@ export default function DailyPage() {
     return (
       <div className={styles.dailyPageContainer}>
         <div className={styles.learnHeader}>
-          <Link href="/acupgame" className={styles.backBtn}>← 返回</Link>
+          <Link href="/" className={styles.backBtn}>← 返回</Link>
           <h1 className={styles.learnTitle}>📅 每日養生功課</h1>
         </div>
 
@@ -131,7 +131,7 @@ export default function DailyPage() {
     <div className={styles.learnContainer}>
       {/* Header */}
       <div className={styles.learnHeader}>
-        <Link href="/acupgame" className={styles.backBtn}>← 返回</Link>
+        <Link href="/" className={styles.backBtn}>← 返回</Link>
         <h1 className={styles.learnTitle}>📅 每日功課</h1>
         <div className={styles.learnProgress}>{currentIdx + 1}/{homeworkPoints.length}</div>
       </div>

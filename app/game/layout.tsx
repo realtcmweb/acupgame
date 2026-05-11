@@ -1,3 +1,5 @@
-export default function GameLayout({ children }: { children: React.ReactNode }) {
+import '../globals.css'
+
+export default function Layout({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }

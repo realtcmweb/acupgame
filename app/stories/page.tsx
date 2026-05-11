@@ -14,7 +14,7 @@ export default function StoriesPage() {
     return (
       <div className={styles.storyContainer}>
         <div className={styles.storyDetail}>
-          <Link href="/acupgame/stories" className={styles.storyDetailBack} onClick={() => setSelectedPoint(null)}>
+          <Link href="/stories" className={styles.storyDetailBack} onClick={() => setSelectedPoint(null)}>
             ← 返回故事列表
           </Link>
           
@@ -48,7 +48,7 @@ export default function StoriesPage() {
             </div>
           </div>
 
-          <Link href="/acupgame/learn" className={styles.bigBtn} style={{ marginTop: 16 }}>
+          <Link href="/learn" className={styles.bigBtn} style={{ marginTop: 16 }}>
             🎯 去練習這個穴位
           </Link>
         </div>
@@ -85,7 +85,7 @@ export default function StoriesPage() {
         ))}
       </div>
 
-      <Link href="/acupgame" className={styles.backBtn} style={{ marginTop: 12 }}>
+      <Link href="/" className={styles.backBtn} style={{ marginTop: 12 }}>
         ← 返回首頁
       </Link>
     </div>

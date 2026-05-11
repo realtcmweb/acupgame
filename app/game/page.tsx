@@ -143,7 +143,7 @@ export default function GamePage() {
           <button className={styles.bigBtn} onClick={startQuiz}>
             ▶️ 開始挑戰
           </button>
-          <Link href="/acupgame" className={styles.btnSecondary}>← 返回首頁</Link>
+          <Link href="/" className={styles.btnSecondary}>← 返回首頁</Link>
         </div>
       </div>
     )
@@ -181,7 +181,7 @@ export default function GamePage() {
           }}>
             🔄 再玩一次
           </button>
-          <Link href="/acupgame" className={styles.btnSecondary} onClick={handleComplete}>
+          <Link href="/" className={styles.btnSecondary} onClick={handleComplete}>
             ← 返回首頁
           </Link>
         </div>
@@ -197,7 +197,7 @@ export default function GamePage() {
     <div className={styles.learnContainer}>
       {/* Header */}
       <div className={styles.learnHeader}>
-        <Link href="/acupgame" className={styles.backBtn}>← 返回</Link>
+        <Link href="/" className={styles.backBtn}>← 返回</Link>
         <div className={styles.learnProgress}>
           {qIndex + 1} / {questions.length}
         </div>
