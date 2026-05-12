@@ -189,20 +189,23 @@ function AcupointOverlay({
   hintUsed: boolean
   onPointClick: (id: string) => void
 }) {
-  // Acupoint positions overlaid on the muscle body SVG
-  // The body viewBox is roughly 500x800, we map LU points proportionally
+  // Acupoint positions overlaid on muscle body SVG
+  // viewBox: 724 x 1448
+  // x: 0%=left edge, 100%=right edge
+  // y: 0%=top, 100%=bottom
   const pointCoords: Record<string, {x: string, y: string}> = {
-    LU1:  { x: '62%', y: '6%' },
-    LU2:  { x: '57%', y: '7%' },
-    LU3:  { x: '38%', y: '11%' },
-    LU4:  { x: '34%', y: '12%' },
-    LU5:  { x: '32%', y: '16%' },
-    LU6:  { x: '28%', y: '18%' },
-    LU7:  { x: '24%', y: '20%' },
-    LU8:  { x: '22%', y: '21%' },
-    LU9:  { x: '20%', y: '22%' },
-    LU10: { x: '18%', y: '23%' },
-    LU11: { x: '16%', y: '24%' },
+    // 肺經 LU1-LU11 (11 points, chest → thumb radial side)
+    LU1:  { x: '27%', y: '19%' },  // 中府 — 鎖骨下外側
+    LU2:  { x: '26%', y: '18%' },  // 雲門 — 鎖骨下窩
+    LU3:  { x: '25%', y: '21%' },  // 天府 — 上臂內側
+    LU4:  { x: '25%', y: '23%' },  // 俠白 — 上臂內側
+    LU5:  { x: '24%', y: '25%' },  // 尺澤 — 肘窩橈側
+    LU6:  { x: '23%', y: '27%' },  // 孔最 — 前臂內側
+    LU7:  { x: '22%', y: '29%' },  // 列缺 — 腕上橈側
+    LU8:  { x: '25%', y: '22%' },  // 經渠 — 腕上橈側
+    LU9:  { x: '25%', y: '23%' },  // 太淵 — 腕橫紋橈側
+    LU10: { x: '22%', y: '23%' },  // 魚際 — 第一掌骨魚際
+    LU11: { x: '21%', y: '24%' },  // 少商 — 拇指橈側
   }
 
   const coord = pointCoords[currentPoint.id]
@@ -210,14 +213,15 @@ function AcupointOverlay({
   return (
     <div className={styles.acupointOverlay}>
       {/* Meridian line hint */}
-      <svg className={styles.meridianOverlaySvg} viewBox="0 0 500 800" preserveAspectRatio="none">
+      <svg className={styles.meridianOverlaySvg} viewBox="0 0 724 1448" preserveAspectRatio="none">
+        {/* 肺經路徑：胸口鎖骨 → 上臂內側 → 前臂 → 拇指 */}
         <path
-          d="M 310 50 Q 285 100 240 170 Q 200 250 160 320 Q 120 390 90 450"
+          d="M 196 275 Q 181 350 175 430 Q 169 510 159 600 Q 152 660 145 720"
           fill="none"
           stroke="#4fc3f7"
-          strokeWidth="2"
-          strokeDasharray="6 4"
-          opacity="0.5"
+          strokeWidth="3"
+          strokeDasharray="8 5"
+          opacity="0.4"
         />
       </svg>
 
