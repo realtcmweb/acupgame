@@ -521,12 +521,85 @@
   display: flex;
   justify-content: center;
   margin-bottom: 12px;
+  position: relative;
 }
 
-.learnBodySvg {
-  width: 100%;
+.bodyWrapper {
+  position: relative;
+  display: inline-block;
   max-width: 320px;
-  border-radius: 12px;
+}
+
+
+.meridianOverlaySvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.acupointOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.acupointDot {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #c9a96e88;
+  border: 2px solid #c9a96e;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  padding: 0;
+  font-size: 0;
+}
+
+.acupointDot:hover {
+  background: #c9a96e;
+  transform: translate(-50%, -50%) scale(1.3);
+}
+.acupointDotCorrect {
+  background: #22c55e;
+  border-color: #16a34a;
+}
+.acupointDotWrong {
+  background: #ef4444;
+  border-color: #dc2626;
+}
+.acupointDotHint {
+  background: #fde047;
+  border-color: #facc15;
+}
+.acupointDotLabel {
+  font-size: 9px;
+  font-weight: 700;
+  color: #1a1a2e;
+  font-family: sans-serif;
+}
+.acupointHintGlow {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px dashed #fde047;
+  transform: translate(-50%, -50%);
+  animation: pulse 1.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.5); }
 }
 
 .learnQuestion {
