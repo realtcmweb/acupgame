@@ -10,6 +10,55 @@ import type { GameProgress } from '../progress'
 import styles from '../page.module.css'
 
 type Phase = 'learning' | 'correct' | 'reveal' | 'story'
+type BodyRegion = 'chest' | 'arm' | 'forearm' | 'hand'
+
+// Region definitions: which part of the body to zoom into
+const REGION_ZOOM: Record<string, { viewBox: string; label: string }> = {
+  chest:    { viewBox: '140 200 350 300', label: '胸腹部' },
+  arm:      { viewBox: '55 270 130 280',  label: '上臂' },
+  forearm:  { viewBox: '55 540 130 320',  label: '前臂' },
+  hand:     { viewBox: '20 860 180 250',  label: '手掌' },
+}
+
+// Map LU points to body regions
+function getPointRegion(pointId: string): BodyRegion {
+  const num = parseInt(pointId.replace('LU', ''))
+  if (num <= 2) return 'chest'
+  if (num <= 4) return 'arm'
+  if (num <= 7) return 'forearm'
+  return 'hand'
+}
+
+// Acupoint positions per region (viewBox-relative percentages)
+const REGION_POINT_COORDS: Record<string, Record<string, {x: number, y: number}>> = {
+  chest: {
+    LU1: { x: 38, y: 32 },
+    LU2: { x: 48, y: 32 },
+  },
+  arm: {
+    LU3: { x: 42, y: 20 },
+    LU4: { x: 38, y: 55 },
+  },
+  forearm: {
+    LU5: { x: 35, y: 15 },
+    LU6: { x: 33, y: 45 },
+    LU7: { x: 28, y: 80 },
+  },
+  hand: {
+    LU8:  { x: 45, y: 25 },
+    LU9:  { x: 42, y: 42 },
+    LU10: { x: 30, y: 60 },
+    LU11: { x: 22, y: 75 },
+  },
+}
+
+// Meridian path per region (SVG path data)
+const REGION_MERIDIAN: Record<string, string> = {
+  chest:   'M 280 30 Q 260 60 240 100',
+  arm:     'M 300 120 Q 270 200 220 320',
+  forearm: 'M 210 80 Q 200 220 185 380',
+  hand:    'M 180 30 Q 160 60 140 120 Q 100 180 60 220',
+}
 
 export default function LearnPage() {
   const [progress, setProgress] = useState<GameProgress | null>(null)
@@ -18,15 +67,27 @@ export default function LearnPage() {
   const [clickedPoint, setClickedPoint] = useState<string | null>(null)
   const [correctCount, setCorrectCount] = useState<Record<string, number>>({})
   const [hintUsed, setHintUsed] = useState(false)
+  const [selectedRegion, setSelectedRegion] = useState<BodyRegion>('chest')
 
   const todayPoints = LU_POINTS_DATA
 
   useEffect(() => {
     const p = loadProgress()
     setProgress(p)
+    // Auto-select region based on current point
+    if (p && todayPoints[0]) {
+      setSelectedRegion(getPointRegion(todayPoints[0].id))
+    }
   }, [])
 
   const current = todayPoints[currentIdx]
+
+  // Auto-switch region when point changes
+  useEffect(() => {
+    if (current) {
+      setSelectedRegion(getPointRegion(current.id))
+    }
+  }, [currentIdx])
 
   const handlePointClick = useCallback((pointId: string) => {
     if (phase !== 'learning') return
@@ -87,6 +148,10 @@ export default function LearnPage() {
     )
   }
 
+  // Points in current region
+  const regionCoords = REGION_POINT_COORDS[selectedRegion] || {}
+  const regionPoints = LU_POINTS_DATA.filter(pt => regionCoords[pt.id])
+
   return (
     <div className={styles.learnContainer}>
       {/* Header */}
@@ -100,28 +165,130 @@ export default function LearnPage() {
         </div>
       </div>
 
-      {/* Interactive Body with Acupoint Overlay */}
-      <div className={styles.learnBodyArea}>
-        <div className={styles.bodyWrapper}>
-          {/* Muscle body background */}
-          <Body
-            data={[]}
-            side="front"
-            gender="male"
-            scale={1.1}
-            border="none"
-            defaultFill="#2a2a4a"
-            defaultStroke="#c9a96e"
-            defaultStrokeWidth={1}
-          />
-          {/* Acupoint overlay */}
-          <AcupointOverlay
-            currentPoint={current}
-            clickedPoint={clickedPoint}
-            phase={phase}
-            hintUsed={hintUsed}
-            onPointClick={handlePointClick}
-          />
+      {/* Region Selector */}
+      <div className={styles.regionSelector}>
+        {(['chest', 'arm', 'forearm', 'hand'] as BodyRegion[]).map(region => (
+          <button
+            key={region}
+            className={`${styles.regionBtn} ${selectedRegion === region ? styles.regionBtnActive : ''}`}
+            onClick={() => setSelectedRegion(region)}
+          >
+            {REGION_ZOOM[region].label}
+          </button>
+        ))}
+      </div>
+
+      {/* Split View: Full Body + Zoomed Region */}
+      <div className={styles.learnSplitView}>
+        {/* Left: Full body with region highlight */}
+        <div className={styles.fullBodyPanel}>
+          <div className={styles.bodyWrapper}>
+            <Body
+              data={[]}
+              side="front"
+              gender="male"
+              scale={0.85}
+              border="#c9a96e"
+              defaultFill="#2a2a4a"
+              defaultStroke="#c9a96e"
+              defaultStrokeWidth={1}
+            />
+            {/* Region hotspots */}
+            {(['chest', 'arm', 'forearm', 'hand'] as BodyRegion[]).map(region => {
+              const coords = getRegionHotspotCoords(region)
+              return (
+                <button
+                  key={region}
+                  className={`${styles.regionHotspot} ${selectedRegion === region ? styles.regionHotspotActive : ''}`}
+                  style={{ left: `${coords.x}%`, top: `${coords.y}%` }}
+                  onClick={() => setSelectedRegion(region)}
+                  title={REGION_ZOOM[region].label}
+                />
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Right: Zoomed region with acupoints */}
+        <div className={styles.zoomedPanel}>
+          <div className={styles.zoomedLabel}>{REGION_ZOOM[selectedRegion].label}</div>
+          <svg
+            viewBox={REGION_ZOOM[selectedRegion].viewBox}
+            className={styles.zoomedSvg}
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {/* Background */}
+            <rect x="0" y="0" width="100%" height="100%" fill="#1a1a2e" rx="12" />
+
+            {/* Simplified body part outline */}
+            <BodyPartOutline region={selectedRegion} />
+
+            {/* Meridian path */}
+            <path
+              d={REGION_MERIDIAN[selectedRegion]}
+              fill="none"
+              stroke="#4fc3f7"
+              strokeWidth="2.5"
+              strokeDasharray="6 4"
+              opacity="0.5"
+            />
+
+            {/* Hint glow */}
+            {hintUsed && phase === 'learning' && regionCoords[current.id] && (
+              <circle
+                cx={regionCoords[current.id].x + '%'}
+                cy={regionCoords[current.id].y + '%'}
+                r="6%"
+                fill="none"
+                stroke="#fde047"
+                strokeWidth="2"
+                strokeDasharray="4 3"
+                opacity="0.6"
+                className="hintPulse"
+              />
+            )}
+
+            {/* Acupoints */}
+            {LU_POINTS_DATA.map(pt => {
+              const coord = regionCoords[pt.id]
+              if (!coord) return null
+              const isCorrect = phase === 'correct' && clickedPoint === pt.id
+              const isWrong = phase === 'reveal' && clickedPoint === pt.id
+              const isRightAnswer = phase === 'reveal' && pt.id === current.id
+              let cls = styles.zoomedAcupoint
+              if (isCorrect) cls += ' ' + styles.zoomedAcupointCorrect
+              else if (isWrong) cls += ' ' + styles.zoomedAcupointWrong
+              else if (isRightAnswer) cls += ' ' + styles.zoomedAcupointHint
+
+              return (
+                <g
+                  key={pt.id}
+                  onClick={() => handlePointClick(pt.id)}
+                  style={{ cursor: phase === 'learning' ? 'pointer' : 'default' }}
+                >
+                  <circle
+                    cx={`${coord.x}%`}
+                    cy={`${coord.y}%`}
+                    r="5%"
+                    className={cls}
+                  />
+                  <text
+                    x={`${coord.x}%`}
+                    y={`${coord.y}%`}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fontSize="3.5%"
+                    fontWeight="bold"
+                    fill="#1a1a2e"
+                    fontFamily="sans-serif"
+                    style={{ pointerEvents: 'none', userSelect: 'none' }}
+                  >
+                    {pt.id}
+                  </text>
+                </g>
+              )
+            })}
+          </svg>
         </div>
       </div>
 
@@ -176,88 +343,56 @@ export default function LearnPage() {
   )
 }
 
-function AcupointOverlay({
-  currentPoint,
-  clickedPoint,
-  phase,
-  hintUsed,
-  onPointClick,
-}: {
-  currentPoint: (typeof LU_POINTS_DATA)[0]
-  clickedPoint: string | null
-  phase: Phase
-  hintUsed: boolean
-  onPointClick: (id: string) => void
-}) {
-  // Acupoint positions overlaid on muscle body SVG
-  // viewBox: 724 x 1448
-  // x: 0%=left edge, 100%=right edge
-  // y: 0%=top, 100%=bottom
-  const pointCoords: Record<string, {x: string, y: string}> = {
-    // 肺經 LU1-LU11 (11 points, chest → thumb radial side)
-    LU1:  { x: '27%', y: '19%' },  // 中府 — 鎖骨下外側
-    LU2:  { x: '26%', y: '18%' },  // 雲門 — 鎖骨下窩
-    LU3:  { x: '25%', y: '21%' },  // 天府 — 上臂內側
-    LU4:  { x: '25%', y: '23%' },  // 俠白 — 上臂內側
-    LU5:  { x: '24%', y: '25%' },  // 尺澤 — 肘窩橈側
-    LU6:  { x: '23%', y: '27%' },  // 孔最 — 前臂內側
-    LU7:  { x: '22%', y: '29%' },  // 列缺 — 腕上橈側
-    LU8:  { x: '25%', y: '22%' },  // 經渠 — 腕上橈側
-    LU9:  { x: '25%', y: '23%' },  // 太淵 — 腕橫紋橈側
-    LU10: { x: '22%', y: '23%' },  // 魚際 — 第一掌骨魚際
-    LU11: { x: '21%', y: '24%' },  // 少商 — 拇指橈側
+// Hotspot position on full body (percentage)
+function getRegionHotspotCoords(region: BodyRegion): {x: number, y: number} {
+  switch (region) {
+    case 'chest':    return { x: 32, y: 22 }
+    case 'arm':      return { x: 20, y: 30 }
+    case 'forearm':  return { x: 16, y: 48 }
+    case 'hand':     return { x: 14, y: 65 }
   }
+}
 
-  const coord = pointCoords[currentPoint.id]
-
-  return (
-    <div className={styles.acupointOverlay}>
-      {/* Meridian line hint */}
-      <svg className={styles.meridianOverlaySvg} viewBox="0 0 724 1448" preserveAspectRatio="none">
-        {/* 肺經路徑：胸口鎖骨 → 上臂內側 → 前臂 → 拇指 */}
-        <path
-          d="M 196 275 Q 181 350 175 430 Q 169 510 159 600 Q 152 660 145 720"
-          fill="none"
-          stroke="#4fc3f7"
-          strokeWidth="3"
-          strokeDasharray="8 5"
-          opacity="0.4"
-        />
-      </svg>
-
-      {/* Hint glow */}
-      {hintUsed && phase === 'learning' && coord && (
-        <div
-          className={styles.acupointHintGlow}
-          style={{ left: coord.x, top: coord.y }}
-        />
-      )}
-
-      {/* All LU points */}
-      {LU_POINTS_DATA.map(pt => {
-        const c = pointCoords[pt.id]
-        if (!c) return null
-        const isCorrect = phase === 'correct' && clickedPoint === pt.id
-        const isWrong = phase === 'reveal' && clickedPoint === pt.id
-        const isRightAnswer = phase === 'reveal' && pt.id === currentPoint.id
-        let cls = styles.acupointDot
-        if (isCorrect) cls += ' ' + styles.acupointDotCorrect
-        else if (isWrong) cls += ' ' + styles.acupointDotWrong
-        else if (isRightAnswer) cls += ' ' + styles.acupointDotHint
-
-        return (
-          <button
-            key={pt.id}
-            className={cls}
-            style={{ left: c.x, top: c.y }}
-            onClick={() => onPointClick(pt.id)}
-            disabled={phase !== 'learning'}
-            title={pt.name}
-          >
-            <span className={styles.acupointDotLabel}>{pt.id}</span>
-          </button>
-        )
-      })}
-    </div>
-  )
+// Simplified body part outline for zoomed view
+function BodyPartOutline({ region }: { region: BodyRegion }) {
+  const outlines: Record<string, React.ReactNode> = {
+    chest: (
+      <g fill="#3a3a5a" stroke="#c9a96e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        {/* Chest outline */}
+        <path d="M 140 260 Q 180 250 240 255 Q 300 260 340 265 Q 350 280 345 310 Q 340 340 320 360 L 280 370 L 220 370 L 180 360 Q 160 340 155 310 Q 150 280 155 265 Z" />
+        {/* Shoulder connections */}
+        <path d="M 155 265 Q 120 280 80 340 L 90 350 Q 140 300 160 280 Z" opacity="0.6" />
+        <path d="M 345 265 Q 380 280 420 340 L 410 350 Q 360 300 340 280 Z" opacity="0.6" />
+      </g>
+    ),
+    arm: (
+      <g fill="#3a3a5a" stroke="#c9a96e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        {/* Upper arm */}
+        <path d="M 55 280 Q 50 320 52 380 Q 55 430 60 470 L 95 480 Q 100 430 100 380 Q 100 330 98 290 Z" />
+        {/* Deltoid */}
+        <path d="M 55 280 Q 80 270 98 290 Q 100 310 98 330 L 55 320 Q 50 300 55 280 Z" opacity="0.8" />
+      </g>
+    ),
+    forearm: (
+      <g fill="#3a3a5a" stroke="#c9a96e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        {/* Forearm */}
+        <path d="M 55 540 Q 50 600 52 660 Q 55 720 60 780 Q 65 830 70 860 L 100 870 Q 105 830 105 780 Q 105 720 102 660 Q 100 600 98 540 Z" />
+        {/* Elbow hint */}
+        <ellipse cx="78" cy="640" rx="18" ry="12" fill="none" stroke="#c9a96e" strokeWidth="1.5" opacity="0.4" />
+      </g>
+    ),
+    hand: (
+      <g fill="#3a3a5a" stroke="#c9a96e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        {/* Palm */}
+        <path d="M 60 920 Q 50 960 52 1000 Q 55 1040 70 1080 L 120 1100 Q 140 1060 145 1020 Q 148 980 140 940 Q 120 920 100 920 Z" />
+        {/* Thumb */}
+        <path d="M 60 920 Q 35 900 25 880 Q 20 860 30 850 Q 45 845 55 860 Q 65 875 70 900 Z" />
+        {/* Fingers */}
+        <path d="M 80 920 Q 75 870 70 850 L 85 850 Q 90 870 95 920 Z" />
+        <path d="M 100 920 Q 95 860 92 840 L 108 840 Q 110 860 115 920 Z" />
+        <path d="M 120 930 Q 115 870 112 850 L 128 850 Q 130 870 135 930 Z" />
+      </g>
+    ),
+  }
+  return outlines[region] || null
 }

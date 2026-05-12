@@ -1350,3 +1350,112 @@
   border-radius: 3px;
   transition: width 0.3s ease;
 }
+
+/* === LEARN SPLIT VIEW === */
+.learnSplitView {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  align-items: flex-start;
+}
+
+.fullBodyPanel {
+  flex: 0 0 140px;
+}
+
+.zoomedPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.zoomedLabel {
+  font-size: 0.85rem;
+  color: #c9a96e;
+  margin-bottom: 6px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.zoomedSvg {
+  width: 100%;
+  max-width: 280px;
+  border-radius: 12px;
+  background: #1a1a2e;
+}
+
+.zoomedAcupoint {
+  fill: #c9a96e88;
+  stroke: #c9a96e;
+  stroke-width: 1;
+  cursor: pointer;
+  transition: fill 0.2s;
+}
+.zoomedAcupoint:hover {
+  fill: #c9a96e;
+}
+.zoomedAcupointCorrect {
+  fill: #22c55e;
+  stroke: #16a34a;
+}
+.zoomedAcupointWrong {
+  fill: #ef4444;
+  stroke: #dc2626;
+}
+.zoomedAcupointHint {
+  fill: #fde047;
+  stroke: #facc15;
+  stroke-width: 2;
+}
+
+/* === REGION SELECTOR === */
+.regionSelector {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+  justify-content: center;
+}
+
+.regionBtn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: #1a1a2e;
+  border: 1px solid #c9a96e44;
+  color: #888;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.regionBtn:hover {
+  border-color: #c9a96e88;
+  color: #c9a96e;
+}
+.regionBtnActive {
+  background: #c9a96e22;
+  border-color: #c9a96e;
+  color: #c9a96e;
+  font-weight: 600;
+}
+
+/* === REGION HOTSPOTS (on full body) === */
+.regionHotspot {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #c9a96e33;
+  border: 2px solid #c9a96e66;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+}
+.regionHotspot:hover {
+  background: #c9a96e66;
+}
+.regionHotspotActive {
+  background: #c9a96e;
+  border-color: #fde047;
+  transform: translate(-50%, -50%) scale(1.2);
+}
