@@ -140,6 +140,14 @@ export default function HomePage() {
             <MeridianCard code="SP" name="脾經" emoji="🩸" learned={0} total={21} active={false} />
             <MeridianCard code="ST" name="胃經" emoji="🍽️" learned={0} total={45} active={false} />
             <MeridianCard code="KI" name="腎經" emoji="⚡" learned={0} total={27} active={false} />
+            <MeridianCard code="SI" name="小腸經" emoji="🔥" learned={0} total={19} active={false} />
+            <MeridianCard code="BL" name="膀胱經" emoji="💧" learned={0} total={67} active={false} />
+            <MeridianCard code="PC" name="心包經" emoji="💝" learned={0} total={9} active={false} />
+            <MeridianCard code="SJ" name="三焦經" emoji="🌡️" learned={0} total={23} active={false} />
+            <MeridianCard code="GB" name="膽經" emoji="💚" learned={0} total={44} active={false} />
+            <MeridianCard code="LR" name="肝經" emoji="🌱" learned={0} total={14} active={false} />
+            <MeridianCard code="RN" name="任脈" emoji="🌙" learned={0} total={24} active={false} />
+            <MeridianCard code="DV" name="督脈" emoji="☀️" learned={0} total={28} active={false} />
           </div>
           {learnedCount > 0 && (
             <Link href="learn" className={styles.bigBtn}>▶️ 繼續學習肺經</Link>
