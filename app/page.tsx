@@ -87,7 +87,14 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* 緩慢闯關入口 */}
+          {/* 症狀推薦入口 */}
+          <div className={styles.menuCard}>
+            <h3 className={styles.menuTitle}>🩺 症狀推薦</h3>
+            <p className={styles.menuDesc}>根據不舒服的症狀，推薦對應穴位</p>
+            <Link href="symptom" className={styles.menuBtn}>看看今天按什麼</Link>
+          </div>
+
+          {/* 穴位學習入口 */}
           <div className={styles.menuCard}>
             <h3 className={styles.menuTitle}>🎯 穴位學習</h3>
             <p className={styles.menuDesc}>無計時、無失敗，慢慢記住每個穴位</p>
